@@ -60,12 +60,8 @@ internal fun GitWorkspaceBody(
     detailWidth: Dp? = null,
     onDetailWidthChange: (Dp?) -> Unit = {},
 ) {
+    // The stateful side: which commit is chosen, and the reads that choice and the history revision drive.
     var selectedHash by remember(workspacePath) { mutableStateOf<String?>(null) }
-    var openPath by remember(workspacePath) { mutableStateOf<String?>(null) }
-    var showBranches by remember(workspacePath) { mutableStateOf(false) }
-    var showDetail by remember(workspacePath) { mutableStateOf(true) }
-    var detached by remember(workspacePath) { mutableStateOf(false) }
-    val strings = historyStrings()
     val log by produceState<GitHistoryResult?>(null, workspacePath, state.historyRevision) {
         value = null
         value = withContext(Dispatchers.Default) { history.loadHistory(workspacePath) }
@@ -75,6 +71,32 @@ internal fun GitWorkspaceBody(
         val hash = selectedHash ?: return@produceState
         value = withContext(Dispatchers.Default) { history.loadCommitDiff(workspacePath, hash) }
     }
+    GitWorkspaceBodyContent(
+        state, workspacePath, log, commitDiff, selectedHash, { selectedHash = it }, history.loadWorkingChanges,
+        onEvent, modifier, detailWidth, onDetailWidthChange,
+    )
+}
+
+/** The body for a loaded [log] and the chosen commit's [commitDiff]; it keeps only its own view choices. */
+@Composable
+internal fun GitWorkspaceBodyContent(
+    state: GitManagementUiState,
+    workspacePath: String,
+    log: GitHistoryResult?,
+    commitDiff: CommitDiffResult?,
+    selectedHash: String?,
+    onSelectedHashChange: (String?) -> Unit,
+    loadWorkingChanges: (workspacePath: String) -> CommitDiffResult,
+    onEvent: (GitManagementEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    detailWidth: Dp? = null,
+    onDetailWidthChange: (Dp?) -> Unit = {},
+) {
+    var openPath by remember(workspacePath) { mutableStateOf<String?>(null) }
+    var showBranches by remember(workspacePath) { mutableStateOf(false) }
+    var showDetail by remember(workspacePath) { mutableStateOf(true) }
+    var detached by remember(workspacePath) { mutableStateOf(false) }
+    val strings = historyStrings()
     BoxWithConstraints(modifier) {
         val available = maxWidth
         val showRefs = available >= ShowRefsFrom
@@ -114,12 +136,12 @@ internal fun GitWorkspaceBody(
                     left = { paneModifier ->
                         if (splitDetail || !showDetail || detached) {
                             GitCenterPane(log, state.snapshot?.files.orEmpty(), selectedHash,
-                                onSelectCommit = { hash -> selectedHash = hash; openPath = null; showDetail = true },
+                                onSelectCommit = { hash -> onSelectedHashChange(hash); openPath = null; showDetail = true },
                                 openPath = openPath,
                                 onCloseFile = { openPath = null },
                                 commitDiff = commitDiff,
                                 workspacePath = workspacePath,
-                                loadWorkingChanges = history.loadWorkingChanges,
+                                loadWorkingChanges = loadWorkingChanges,
                                 refreshKey = state.historyRevision,
                                 modifier = paneModifier,
                                 branch = state.snapshot?.let(::gitBranchLabel),
@@ -136,7 +158,7 @@ internal fun GitWorkspaceBody(
                                 onDetach = { detached = true },
                                 onRestore = { detached = false; showDetail = true },
                                 modifier = paneModifier,
-                                onCloseCommit = { selectedHash = null; openPath = null })
+                                onCloseCommit = { onSelectedHashChange(null); openPath = null })
                         } else Box(paneModifier)
                     },
                 )
