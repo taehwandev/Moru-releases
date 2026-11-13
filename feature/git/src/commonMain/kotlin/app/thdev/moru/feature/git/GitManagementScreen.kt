@@ -37,11 +37,17 @@ fun GitManagementScreen(
         }
         var width by remember { mutableStateOf(detailWidth) }
         LaunchedEffect(holder) { holder.load() }
+        val onEvent: (GitManagementEvent) -> Unit = { event -> if (event is GitManagementEvent.OpenWorktree) onOpenWorktree(event.path) else holder.onEvent(event) }
         GitManagementContent(
-            holder.state, workspacePath, history, modifier,
-            detailWidth = width,
-            onDetailWidthChange = { width = it; onDetailWidthChange(it) },
-            onEvent = { event -> if (event is GitManagementEvent.OpenWorktree) onOpenWorktree(event.path) else holder.onEvent(event) },
+            holder.state, workspacePath,
+            workspaceBody = { bodyModifier ->
+                GitWorkspaceBody(
+                    holder.state, workspacePath, history, onEvent, bodyModifier,
+                    detailWidth = width, onDetailWidthChange = { width = it; onDetailWidthChange(it) },
+                )
+            },
+            modifier = modifier,
+            onEvent = onEvent,
         )
     }
 }

@@ -26,7 +26,7 @@ class GitStatelessContentTest {
         val snapshot = GitManagementFixtures.snapshot.copy(files = listOf(partial, conflict, GitManagementFixtures.untracked))
         val state = GitManagementUiState().afterRead(GitRepositoryState.Loaded(snapshot))
         val events = mutableListOf<GitManagementEvent>()
-        setContent { MoruTheme { GitManagementContent(state, snapshot.rootPath, NoHistory, onEvent = { events += it }) } }
+        setContent { MoruTheme { GitManagementContent(state, snapshot.rootPath, statelessBody(state, snapshot.rootPath), onEvent = { events += it }) } }
         onNodeWithTag("git-review-partial [file].kt").assertTextContains("partial [file].kt")
         onNodeWithTag("git-stage-partial [file].kt").assertExists()
         onNodeWithTag("git-unstage-partial [file].kt").assertExists()
@@ -41,7 +41,7 @@ class GitStatelessContentTest {
     @Test
     fun theWorkingFolderRowAndTheBranchesAreOnTheSameScreenAsTheChanges() = runDesktopComposeUiTest(width = 1200, height = 800) {
         val state = GitManagementUiState().afterRead(GitRepositoryState.Loaded(GitManagementFixtures.snapshot))
-        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, NoHistory, onEvent = {}) } }
+        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, statelessBody(state, GitManagementFixtures.Folder), onEvent = {}) } }
         waitForIdle()
         onNodeWithTag("git-wip-row").assertIsDisplayed()
         onNodeWithTag("git-branches").assertIsDisplayed()
@@ -54,7 +54,7 @@ class GitStatelessContentTest {
         val snapshot = GitManagementFixtures.snapshot.copy(files = emptyList(), remotes = emptyList(),
             upstream = null, upstreamRemote = null, upstreamBranch = null, ahead = null, behind = null)
         val state = GitManagementUiState().afterRead(GitRepositoryState.Loaded(snapshot))
-        setContent { MoruTheme { GitManagementContent(state, snapshot.rootPath, NoHistory, onEvent = {}) } }
+        setContent { MoruTheme { GitManagementContent(state, snapshot.rootPath, statelessBody(state, snapshot.rootPath), onEvent = {}) } }
         onNodeWithText("Working folder is clean. No changes to stage.").assertExists()
         onNodeWithText("No remote configured. Local changes and branches are available.").assertExists()
         onNodeWithTag("git-stage-all").assertIsNotEnabled()
@@ -64,7 +64,7 @@ class GitStatelessContentTest {
 
     @Test
     fun loadingFixtureDisablesRefreshAndShowsItsReadState() = runDesktopComposeUiTest(width = 420, height = 600) {
-        setContent { MoruTheme { GitManagementContent(GitManagementUiState(), GitManagementFixtures.Folder, NoHistory, onEvent = {}) } }
+        setContent { MoruTheme { GitManagementContent(GitManagementUiState(), GitManagementFixtures.Folder, statelessBody(GitManagementUiState(), GitManagementFixtures.Folder), onEvent = {}) } }
         onNodeWithTag("git-loading").assertTextContains("Loading repository", substring = true)
         onNodeWithTag("git-refresh").assertIsNotEnabled()
     }
@@ -72,7 +72,7 @@ class GitStatelessContentTest {
     @Test
     fun unavailableFixtureShowsTheExactReason() = runDesktopComposeUiTest(width = 420, height = 600) {
         val state = GitManagementUiState(repositoryState = GitRepositoryState.Unavailable("Not a Git repository"), loading = false)
-        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, NoHistory, onEvent = {}) } }
+        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, statelessBody(state, GitManagementFixtures.Folder), onEvent = {}) } }
         onNodeWithTag("git-unavailable").assertTextContains("Not a Git repository")
     }
 
@@ -81,7 +81,7 @@ class GitStatelessContentTest {
         val state = GitManagementUiState().afterRead(
             GitRepositoryState.Loaded(GitManagementFixtures.snapshot.copy(files = emptyList())),
         ).copy(selectedBranch = "local:reviewed")
-        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, NoHistory, onEvent = {}) } }
+        setContent { MoruTheme { GitManagementContent(state, GitManagementFixtures.Folder, statelessBody(state, GitManagementFixtures.Folder), onEvent = {}) } }
         onNodeWithTag("git-switch-branch").assertDoesNotExist()
         captureGit("git-compact-branches")
         onNodeWithTag("git-select-branch-reviewed").performMouseInput { rightClick() }

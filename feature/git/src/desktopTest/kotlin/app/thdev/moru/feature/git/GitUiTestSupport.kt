@@ -1,5 +1,7 @@
 package app.thdev.moru.feature.git
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.ComposeUiTest
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -18,6 +20,14 @@ internal val NoHistory = GitHistorySource(
     loadHistory = { GitHistoryResult.Loaded(emptyList(), truncated = false) },
     loadCommitDiff = { _, _ -> CommitDiffResult.Unavailable("No diff in this fixture.") },
 )
+
+/** The workspace body over [NoHistory], for stateless Content tests that need the body in place. */
+internal fun statelessBody(
+    state: GitManagementUiState,
+    workspacePath: String,
+): @Composable (Modifier) -> Unit = { bodyModifier ->
+    GitWorkspaceBody(state, workspacePath, NoHistory, {}, bodyModifier)
+}
 
 @OptIn(ExperimentalTestApi::class)
 internal fun ComposeUiTest.showGit(repository: GitRepository?, folder: String = GitManagementFixtures.Folder) {

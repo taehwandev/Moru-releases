@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.thdev.moru.core.designsystem.component.MoruScreen
 import app.thdev.moru.core.designsystem.component.MoruText
@@ -17,10 +16,8 @@ import app.thdev.moru.core.model.git.GitRepositoryState
 internal fun GitManagementContent(
     state: GitManagementUiState,
     workspacePath: String,
-    history: GitHistorySource,
+    workspaceBody: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier,
-    detailWidth: Dp? = null,
-    onDetailWidthChange: (Dp?) -> Unit = {},
     onEvent: (GitManagementEvent) -> Unit,
 ) {
     MoruScreen(modifier, padding = 12.dp, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -42,9 +39,7 @@ internal fun GitManagementContent(
                     MoruText(state.repositoryState.message, Modifier.testTag("git-unavailable"), color = MoruTheme.colors.textSecondary)
                 }
             }
-            state.snapshot != null -> GitWorkspaceBody(
-                state, workspacePath, history, onEvent, Modifier.weight(1f).fillMaxWidth(), detailWidth, onDetailWidthChange,
-            )
+            state.snapshot != null -> workspaceBody(Modifier.weight(1f).fillMaxWidth())
             else -> Box(Modifier.weight(1f))
         }
     }

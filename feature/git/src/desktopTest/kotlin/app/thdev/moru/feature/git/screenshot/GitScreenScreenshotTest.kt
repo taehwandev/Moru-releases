@@ -23,6 +23,7 @@ import app.thdev.moru.core.designsystem.theme.lightCkColors
 import app.thdev.moru.core.model.git.GitRepositoryState
 import app.thdev.moru.feature.git.GitHistorySource
 import app.thdev.moru.feature.git.GitManagementContent
+import app.thdev.moru.feature.git.GitWorkspaceBody
 import app.thdev.moru.feature.git.GitManagementFixtures
 import app.thdev.moru.feature.git.GitManagementUiState
 import app.thdev.moru.feature.git.afterRead
@@ -67,7 +68,11 @@ class GitScreenScreenshotTest {
             MoruTheme(darkTheme = !colors.isLight, colors = colors, materialStyle = MoruMaterialStyle.Apple) {
                 CompositionLocalProvider(LocalUiLanguage provides language) {
                     Box(Modifier.fillMaxSize().background(colors.background)) {
-                        GitManagementContent(state, GitManagementFixtures.Folder, source, Modifier.fillMaxSize(), onEvent = {})
+                        GitManagementContent(
+                            state, GitManagementFixtures.Folder,
+                            { bodyModifier -> GitWorkspaceBody(state, GitManagementFixtures.Folder, source, {}, bodyModifier) },
+                            Modifier.fillMaxSize(), onEvent = {},
+                        )
                     }
                 }
             }
