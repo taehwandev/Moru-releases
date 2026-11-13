@@ -1,0 +1,9 @@
+.moru/
+build/
+.gradle/
+.kotlin/
+local.properties
+.DS_Store
+*.iml
+.idea/
+/_local/

@@ -1,0 +1,223 @@
+package app.thdev.moru.feature.settings.i18n
+
+import app.thdev.moru.core.model.AppLanguage
+import app.thdev.moru.core.model.AppShortcut
+import app.thdev.moru.core.model.AppIcon
+import app.thdev.moru.core.model.AppTheme
+import app.thdev.moru.core.model.TaskSortOrder
+import app.thdev.moru.core.model.terminal.TerminalColorSlot
+import app.thdev.moru.core.model.terminal.TerminalCursorStyle
+import app.thdev.moru.core.model.terminal.TerminalImportItem
+
+internal object KoreanSettingsStrings : SettingsStrings {
+    override val title = "설정"
+    override val subtitle = "왼쪽에서 항목을 고르세요."
+    override val automaticSaveHint = "변경 사항을 자동으로 저장합니다."
+    override val savingMessage = "변경 사항 저장 중…"
+    override val savedMessage = "모든 변경 사항을 저장했습니다."
+    override fun saveFailed(reason: String) = "저장하지 못했습니다: $reason"
+    override val unknownError = "알 수 없는 오류"
+    override val retryButton = "다시 시도"
+    override val invalidNumbersHint = "표시된 숫자를 올바르게 입력하면 변경 사항이 저장됩니다."
+    override fun numberRange(min: Int, max: Int) = "${min}에서 ${max} 사이의 정수를 입력하세요."
+
+    override val updatesTitle = "업데이트"
+    override val appUpdatesTitle = "Moru 앱"
+    override val labSessionsTitle = "실험실 세션"
+    override val labSessionsDescription = "새 세션에 Claude, Codex, AGY 실험실을 추가합니다. 대화 공유, 복사, 링크, 파일 변경, 이미지 첨부, 모델 선택을 지원합니다."
+    override val tasksBesideTitle = "옆에 작업 열기"
+    override val tasksBesideDescription = "작업 메뉴에 '옆에 열기'를 추가합니다. 그 작업의 터미널이 선택한 작업 옆에 열리고, 승인에 바로 답할 수 있으며, 결과 패널에서 그 작업의 Preview, 기기, 코드를 볼 수 있습니다."
+    override val devicesAmongTerminalsTitle = "터미널 옆 기기 도구"
+    override val devicesAmongTerminalsDescription = "새 세션 목록(Command-T)에 Android 에뮬레이터, iOS 시뮬레이터, 기기 비교를 추가합니다. 사이드바의 그 도구가 작업의 터미널 옆 칸으로 열리고, 터미널처럼 옮기고 크기를 바꿀 수 있습니다."
+    override val projectWindowsTitle = "프로젝트 창"
+    override val projectWindowsDescription = "프로젝트 메뉴에 '새 창으로 열기'를 추가합니다. 그 프로젝트가 자기 창에서 열려 다른 화면에 둘 수 있고, Moru를 다시 켜면 그 자리에 다시 열립니다."
+    override val updatesDescription = "Moru를 최신 상태로 유지합니다."
+    override fun currentVersion(version: String) = "현재 버전: $version"
+    override val versionUnavailable = "앱 버전을 확인할 수 없음"
+    override val automaticUpdates = "Moru가 자동으로 업데이트를 확인하고 다운로드합니다. 업데이트가 준비되면 다시 시작하세요."
+    override val updatesUnavailable = "업데이트는 설치된 macOS 앱에서 사용할 수 있습니다."
+    override val checkForUpdates = "업데이트 확인…"
+    override val restartToUpdate = "재시작하여 업데이트"
+
+    override val generalTitle = "일반"
+    override val generalDescription = "상태 복원 및 작업 정렬."
+    override val rememberStateTitle = "마지막 상태 기억"
+    override val rememberStateDescription =
+        "켜면 Moru를 꺼도 터미널과 에이전트가 계속 실행되고, 다시 열면 창·작업 공간·터미널을 그대로 이어 갑니다. " +
+            "끄면 Moru를 종료할 때 모든 터미널이 종료됩니다. 실행 중인 터미널이 있으면 종료 전에 한 번 묻고, 그때만 유지할 수도 있습니다."
+    override val autoCollapseSidebarTitle = "비활성 프로젝트 및 세션 자동 접기"
+    override val autoCollapseSidebarDescription =
+        "켜면 프로젝트나 작업을 선택할 때 다른 프로젝트와 대기 중인 세션 목록을 자동으로 접어 현재 작업에 집중합니다. " +
+            "끄면 사용자가 직접 열고 닫은 상태를 그대로 유지합니다."
+    override val taskSortOrderTitle = "작업 순서"
+    override val taskSortOrderDescription =
+        "모든 프로젝트에서 작업을 생성 시간순으로 정렬합니다. 오래된 작업부터 정렬하면 새 작업이 맨 아래에 표시됩니다. 드래그하면 수동 순서로 전환됩니다."
+    override fun taskSortOrderLabel(order: TaskSortOrder) = when (order) {
+        TaskSortOrder.OldestFirst -> "오래된 작업부터"
+        TaskSortOrder.NewestFirst -> "최신 작업부터"
+        TaskSortOrder.Manual -> "수동"
+    }
+    override val attentionTitle = "알림"
+    override val attentionDescription = "작업이 나를 기다리거나 실패했을 때 알려 주는 방법."
+    override val desktopNotificationsTitle = "시스템 알림"
+    override val desktopNotificationsDescription = "작업이 나를 기다리거나 실패하면 macOS 알림을 보냅니다."
+
+    override val appearanceTitle = "화면 및 글꼴"
+    override val appearanceDescription = "테마, 언어 및 IDE 가독성."
+    override val themeTitle = "테마"
+    override val themeDescription = "앱 색상 모드를 고릅니다."
+    override val appleStyleTitle = "Apple 스타일"
+    override val appleStyleDescription = "Liquid Glass 표면과 둥근 컨트롤을 사용합니다. 저장 후 적용되며 색상 테마는 그대로 유지됩니다."
+    override val appIconTitle = "앱 아이콘"
+    override val onboardingTitle = "시작 안내와 워크플로우 설정"
+    override val onboardingDescription = "처음 실행할 때의 단계를 다시 진행해요: 테마."
+    override val onboardingOpen = "다시 보기"
+    override val appIconDescription = "Moru가 실행 중일 때 Dock에 보이는 아이콘입니다. 고르는 즉시 바뀌고, Finder와 Launchpad에는 Moru 아이콘이 그대로 보입니다."
+    override fun appIconLabel(icon: AppIcon) = when (icon) {
+        AppIcon.Moru -> "Moru"
+        AppIcon.Classic -> "예전"
+        AppIcon.Anvil -> "모루"
+        AppIcon.M -> "m"
+        AppIcon.Mo -> "모"
+    }
+    override val languageTitle = "언어"
+    override val languageDescription = "앱 자체 문구의 언어입니다."
+    override val fontTitle = "터미널 글꼴"
+    override val fontSizeTitle = "터미널 글꼴 크기"
+    override val fontDescription = "작업 패널을 포함한 모든 내장 터미널에 적용됩니다. 새 세션부터 반영되며 IDE 글꼴은 바뀌지 않습니다."
+    override val fontPlaceholder = "시스템 기본값"
+    override val uiFontTitle = "IDE 글꼴"
+    override val uiFontSizeTitle = "IDE 글꼴 크기"
+    override val uiFontDescription = "앱 문구와 코드 화면에 적용됩니다. 저장 후 반영되며 터미널 글꼴은 바뀌지 않습니다."
+    override val searchFonts = "설치된 글꼴 검색"
+    override val noFontsFound = "일치하는 글꼴 없음"
+    override val fontPreview = "Aa Bb 가나다 0123 — 미리보기"
+    override val resetFont = "글꼴 초기화"
+    override fun decreaseFontSize(label: String) = "$label 줄이기"
+    override fun increaseFontSize(label: String) = "$label 키우기"
+    override fun themeLabel(theme: AppTheme) = when (theme) {
+        AppTheme.System -> "시스템"
+        AppTheme.Light -> "라이트"
+        AppTheme.Dark -> "다크"
+        AppTheme.FreshMint -> "Fresh Mint"
+        AppTheme.GitHubLight -> "GitHub Light"
+        AppTheme.GitHubDark -> "GitHub Dark"
+        AppTheme.CatppuccinLatte -> "Catppuccin Latte"
+        AppTheme.CatppuccinMocha -> "Catppuccin Mocha"
+        AppTheme.TokyoNight -> "Tokyo Night"
+    }
+    override fun languageLabel(language: AppLanguage) = languageName(language, system = "시스템")
+
+    override val terminalTitle = "터미널"
+    override val terminalDescription = "새 PTY 세션의 기본값."
+    override val shellTitle = "기본 셸"
+    override val shellDescription = "비워 두면 감지된 플랫폼 셸을 씁니다."
+    override val scrollbackTitle = "스크롤백 줄 수"
+    override val scrollbackDescription = "터미널 버퍼마다 보관하는 최대 줄 수입니다."
+    override val optionKeyTitle = "Option 키로 Escape 보내기"
+    override val optionKeyDescription = "Option+키를 셸에 Esc+키로 보내 단어 단위 이동에 씁니다. 끄면 å, ∑ 같은 문자를 입력합니다."
+    override val terminalImportTitle = "iTerm2 설정"
+    override val terminalImportDescription = "iTerm2 기본 프로필의 색상, 폰트, 커서, 스크롤백을 가져옵니다."
+    override val terminalImportAction = "iTerm2에서 가져오기"
+    override val terminalImporting = "가져오는 중…"
+    override val terminalLookTitle = "터미널 모양"
+    override val terminalLookDescription = "모든 터미널의 색, 커서, 줄 간격입니다. 바꾸지 않은 항목은 Moru 테마를 따릅니다."
+    override val terminalSchemeTitle = "색 구성"
+    override val terminalSchemeDescription = "라이트 테마와 다크 테마에 각각 고릅니다."
+    override val terminalSchemeLight = "라이트"
+    override val terminalSchemeDark = "다크"
+    override val terminalSchemeMoru = "Moru"
+    override val terminalSchemeCustom = "사용자 지정"
+    override val terminalColorsTitle = "색상"
+    override val terminalColorsDescription = "색을 고르고 #rrggbb로 입력합니다. 점이 있는 색이 직접 바꾼 색이고, 나머지는 Moru를 따릅니다."
+    override val terminalColorUseMoru = "Moru 색"
+    override fun terminalColorSlot(slot: TerminalColorSlot) = when (slot) {
+        TerminalColorSlot.Foreground -> "글자"
+        TerminalColorSlot.Background -> "배경"
+        TerminalColorSlot.Selection -> "선택 영역"
+        else -> (if (slot.ansiIndex >= 8) "밝은 " else "") + listOf("검정", "빨강", "초록", "노랑", "파랑", "자홍", "청록", "흰색")[slot.ansiIndex % 8]
+    }
+    override val terminalCursorTitle = "커서"
+    override val terminalCursorDescription = "프로그램이 다른 모양을 요청하기 전까지 쓰는 커서 모양입니다."
+    override fun terminalCursorStyle(style: TerminalCursorStyle) = when (style) {
+        TerminalCursorStyle.Block -> "블록"
+        TerminalCursorStyle.Underline -> "밑줄"
+        TerminalCursorStyle.Bar -> "세로 막대"
+    }
+    override val terminalCursorBlinkTitle = "커서 깜빡임"
+    override val terminalCursorBlinkDescription = "입력을 기다리는 동안 커서가 깜빡입니다."
+    override val terminalLineSpacingTitle = "줄 간격 (%)"
+    override val terminalLineSpacingDescription = "폰트 기본 줄 높이에 대한 비율입니다. Moru 기본값은 106입니다."
+    override val terminalLookResetTitle = "터미널 모양 초기화"
+    override val terminalLookResetDescription = "가져오거나 직접 바꾼 색, 커서, 줄 간격과 가져온 폰트·스크롤백을 지웁니다."
+    override val terminalLookResetAction = "Moru 기본값으로"
+    override fun terminalImportUsing(source: String) = "$source 사용 중."
+    override val terminalImportNotFound = "이 Mac에서 iTerm2 설정을 찾지 못했습니다."
+    override fun terminalImportFailed(reason: String) = "iTerm2 설정을 읽지 못했습니다: $reason"
+    override fun terminalImportApplied(items: String) = "적용함: $items"
+    override fun terminalImportSkipped(items: String) = "지원 안 함: $items"
+    override fun terminalImportItem(item: TerminalImportItem) = when (item) {
+        TerminalImportItem.Colors -> "색상"
+        TerminalImportItem.LightDarkColors -> "라이트/다크 색상"
+        TerminalImportItem.Font -> "폰트"
+        TerminalImportItem.LineSpacing -> "줄 간격"
+        TerminalImportItem.Cursor -> "커서"
+        TerminalImportItem.Scrollback -> "스크롤백"
+        TerminalImportItem.Transparency -> "투명도"
+        TerminalImportItem.Blur -> "블러"
+        TerminalImportItem.BackgroundImage -> "배경 이미지"
+        TerminalImportItem.ColumnSpacing -> "글자 간격"
+        TerminalImportItem.CursorColor -> "커서 색"
+        TerminalImportItem.NonAsciiFont -> "비ASCII 폰트"
+        TerminalImportItem.Ligatures -> "리거처"
+        TerminalImportItem.KeyMappings -> "키 매핑"
+        TerminalImportItem.Triggers -> "트리거"
+    }
+
+    override val agentClisTitle = "에이전트 CLI"
+    override val agentClisDescription =
+        "Task 터미널에서 실행하는 CLI입니다. 업데이트는 설치한 방식과 직접 고른 릴리스 채널을 그대로 따릅니다."
+    override val agentClisLooking = "설치된 CLI를 찾는 중…"
+    override val noAgentCliTitle = "에이전트 CLI를 찾지 못했습니다"
+    override val noAgentCliDescription = "Claude Code, Codex, Antigravity(agy) 중 하나를 설치한 뒤 설정을 다시 여세요."
+    override val cliUpdatedOutsideMoru = "npm으로 설치되어 Moru가 채널을 알 수 없습니다. 쓰던 방식대로 npm에서 업데이트하세요."
+    override val cliUpdate = "업데이트"
+    override val cliUpdating = "업데이트 중…"
+    override fun cliUpdated(version: String) =
+        "$version 버전으로 업데이트했습니다. 쉬고 있는 세션은 바로, 작업 중인 세션은 턴이 끝나면 다시 시작합니다."
+    override fun cliAlreadyLatest(version: String) = "이미 이 설치 경로의 최신 버전입니다($version)."
+    override fun cliUpdateFailed(detail: String?, command: String) =
+        "업데이트하지 못했습니다${detail?.let { ": $it" } ?: "."} 터미널에서 직접 실행하세요: $command"
+
+    override val shortcutsTitle = "단축키"
+    override val shortcutsDescription = "단축키를 누른 뒤 새 키를 입력하세요. Delete는 지우고, Esc는 그대로 둡니다."
+    override fun shortcutLabel(shortcut: AppShortcut) = when (shortcut) {
+        AppShortcut.OpenProject -> "프로젝트 열기"
+        AppShortcut.NewTask -> "새 작업"
+        AppShortcut.NewSession -> "새 세션"
+        AppShortcut.SplitRight -> "터미널 오른쪽으로 나누기"
+        AppShortcut.SplitDown -> "터미널 아래로 나누기"
+        AppShortcut.CloseTerminal -> "터미널 닫기"
+        AppShortcut.ReopenClosedTerminal -> "닫은 터미널 다시 열기"
+        AppShortcut.CloseProject -> "프로젝트 닫기"
+        AppShortcut.CheckForUpdates -> "업데이트 확인"
+        AppShortcut.QuitEndingTerminals -> "종료하고 터미널 모두 끄기"
+        AppShortcut.ShowWork -> "작업 보기"
+        AppShortcut.ShowCode -> "코드 보기"
+        AppShortcut.ShowGit -> "Git 보기"
+        AppShortcut.NextTask -> "다음 작업"
+        AppShortcut.PreviousTask -> "이전 작업"
+        AppShortcut.NextSession -> "다음 세션"
+        AppShortcut.PreviousSession -> "이전 세션"
+        AppShortcut.ShowKnowledge -> "지식 보기"
+        AppShortcut.ShowSettings -> "설정 보기"
+        AppShortcut.NextProject -> "다음 프로젝트"
+        AppShortcut.PreviousProject -> "이전 프로젝트"
+        else -> "${AppShortcut.openProjectByPosition.indexOf(shortcut) + 1}번째 프로젝트 열기"
+    }
+    override val shortcutNone = "없음"
+    override val shortcutWaiting = "키를 누르세요…"
+    override fun shortcutReserved(chord: String) = "${chord}는 복사·붙여넣기나 시스템용이라 쓸 수 없습니다"
+    override val shortcutReset = "기본값"
+    override fun shortcutMoved(from: String, to: String) = "“$from”에 있던 단축키를 “$to”에 옮겼습니다."
+}
