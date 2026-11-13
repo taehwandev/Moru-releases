@@ -120,40 +120,90 @@ fun MultiTerminalPane(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .ckSurface(MoruSurfaceRole.Terminal),
-    ) {
+    val branches = rememberSessionBranches(
+        visibleTerminalSessions(workspaceSessions, selectedSessionId).map { it.id },
+        defaultWorkingDirectory,
+        sessionBranch,
+    )
+    MultiTerminalPaneContent(
+        workspaceId = workspaceId,
+        workspaceName = workspaceName,
+        sessions = workspaceSessions,
+        selectedSessionId = selectedSessionId,
+        branches = branches,
+        canCreateTerminal = sessionManager.canAddTaskTerminalSession(workspaceId) || (canOpenPanels && onNewTerminal != null),
+        split = split,
+        onSplitChange = onSplitChange,
+        terminalFontFamily = terminalFontFamily,
+        terminalFontSize = terminalFontSize,
+        terminalScrollbackLines = terminalScrollbackLines,
+        panels = panels,
+        onSelectSession = { sessionId -> selection.select(workspaceId, sessionId); onActivate(sessionId) },
+        onCloseSession = { session -> selection.close(workspaceId, session.id, workspaceSessions) },
+        onNewTerminal = requestNewTerminal,
+        onFocus = { session -> selection.select(workspaceId, session.id); onActivate(session.id) },
+        onNativeFocus = { session -> selection.activate(workspaceId, session.id); onActivate(session.id) },
+        onCommandCaptured = { session, command ->
+            sessionManager.recordCommandHistory(session.id, command)
+            selection.changed()
+        },
+        onOutput = { session, atMillis -> sessionManager.reportOutput(session.id, atMillis) },
+        onExit = { session, exitCode ->
+            sessionManager.reportExit(session.id, exitCode)
+            selection.changed()
+        },
+        onOpenExternalTerminal = onOpenExternalTerminal,
+        modifier = modifier,
+    )
+}
+
+/**
+ * The terminal tabs and the grid for a Task's sessions, drawn from what it is given: the sessions, the selection and
+ * the callbacks. It never touches the session manager, so it renders from fixtures.
+ */
+@Composable
+internal fun MultiTerminalPaneContent(
+    workspaceId: String,
+    workspaceName: String,
+    sessions: List<TerminalSessionSnapshot>,
+    selectedSessionId: String?,
+    branches: Map<String, String>,
+    canCreateTerminal: Boolean,
+    split: PanelNode?,
+    onSplitChange: (PanelNode) -> Unit,
+    terminalFontFamily: String?,
+    terminalFontSize: Int,
+    terminalScrollbackLines: Int,
+    panels: List<MoruPanelCell>,
+    onSelectSession: (String) -> Unit,
+    onCloseSession: (TerminalSessionSnapshot) -> Unit,
+    onNewTerminal: () -> Unit,
+    onFocus: (TerminalSessionSnapshot) -> Unit,
+    onNativeFocus: (TerminalSessionSnapshot) -> Unit,
+    onCommandCaptured: (TerminalSessionSnapshot, String) -> Unit,
+    onOutput: (TerminalSessionSnapshot, Long) -> Unit,
+    onExit: (TerminalSessionSnapshot, Int?) -> Unit,
+    onOpenExternalTerminal: (TerminalSessionSnapshot) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier.fillMaxSize().ckSurface(MoruSurfaceRole.Terminal)) {
         TerminalTabs(
-            sessions = workspaceSessions,
+            sessions = sessions,
             selectedSessionId = selectedSessionId,
-            canCreateSplit = sessionManager.canAddTaskTerminalSession(workspaceId) || (canOpenPanels && onNewTerminal != null),
+            canCreateSplit = canCreateTerminal,
             badgeType = ::statusBadgeType,
-            onSelectSession = { sessionId -> selection.select(workspaceId, sessionId); onActivate(sessionId) },
-            onCloseSession = { session ->
-                selection.close(workspaceId, session.id, workspaceSessions)
-            },
-            onNewTerminal = requestNewTerminal,
+            onSelectSession = onSelectSession,
+            onCloseSession = onCloseSession,
+            onNewTerminal = onNewTerminal,
             panels = panels,
         )
-
-        if (workspaceSessions.isEmpty()) {
-            EmptyTerminalState(
-                workspaceName = workspaceName,
-                onNewTerminal = requestNewTerminal,
-            )
+        if (sessions.isEmpty()) {
+            EmptyTerminalState(workspaceName = workspaceName, onNewTerminal = onNewTerminal)
             return@Column
         }
-
-        val branches = rememberSessionBranches(
-            visibleTerminalSessions(workspaceSessions, selectedSessionId).map { it.id },
-            defaultWorkingDirectory,
-            sessionBranch,
-        )
         TerminalSplitGrid(
             workspaceId = workspaceId,
-            sessions = workspaceSessions,
+            sessions = sessions,
             selectedSessionId = selectedSessionId,
             branches = branches,
             split = split,
@@ -161,21 +211,13 @@ fun MultiTerminalPane(
             terminalFontFamily = terminalFontFamily,
             terminalFontSize = terminalFontSize,
             terminalScrollbackLines = terminalScrollbackLines,
-            onFocus = { session -> selection.select(workspaceId, session.id); onActivate(session.id) },
-            onNativeFocus = { session -> selection.activate(workspaceId, session.id); onActivate(session.id) },
-            onCommandCaptured = { session, command ->
-                sessionManager.recordCommandHistory(session.id, command)
-                selection.changed()
-            },
-            onOutput = { session, atMillis -> sessionManager.reportOutput(session.id, atMillis) },
-            onExit = { session, exitCode ->
-                sessionManager.reportExit(session.id, exitCode)
-                selection.changed()
-            },
+            onFocus = onFocus,
+            onNativeFocus = onNativeFocus,
+            onCommandCaptured = onCommandCaptured,
+            onOutput = onOutput,
+            onExit = onExit,
             onOpenExternalTerminal = onOpenExternalTerminal,
-            onClose = { session ->
-                selection.close(workspaceId, session.id, workspaceSessions)
-            },
+            onClose = onCloseSession,
             modifier = Modifier.weight(1f),
             panels = panels,
         )
