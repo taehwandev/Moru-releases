@@ -1,11 +1,21 @@
 # Moru Community Edition
 
+**English** · [한국어](README.ko.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A task-first desktop workbench for coding agents, written in Kotlin Multiplatform and Compose Multiplatform.
 Each Project holds Tasks; each Task runs its agents in real terminals (a real PTY, not a pseudo-console) next to a
 Result view with the changed code and Git history.
 
 This repository is the open-source IDE core of an earlier Moru app. It is in **maintenance mode**:
 bug fixes are welcome, new product features are not planned here. This repository ships the IDE core only.
+
+## Screenshots
+
+| Git: history graph, refs and a commit's files | Sessions grouped by Project and Task | Start a Task |
+| --- | --- | --- |
+| ![Git screen](docs/images/git.png) | ![Session tree](docs/images/sessions.png) | ![New Task](docs/images/new-task.png) |
+
+The captures come from the app's own screenshot tests, which use sample data.
 
 ## What is here
 
