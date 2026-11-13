@@ -55,7 +55,7 @@ fun TaskCodePanel(
     LaunchedEffect(holder, root, focused) { holder.watchChanges(root, repeat = focused) }
 
     CodePanel(
-        source = source,
+        fileCode = { worktreeRoot, file, fileModifier -> ChangedFileCode(source, worktreeRoot, file, fileModifier) },
         worktrees = holder.worktrees,
         checked = holder.checked,
         worktreeRoot = root,

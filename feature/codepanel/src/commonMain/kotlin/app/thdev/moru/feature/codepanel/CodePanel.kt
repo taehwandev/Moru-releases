@@ -29,7 +29,7 @@ import app.thdev.moru.core.ui.i18n.coreUiStrings
  */
 @Composable
 internal fun CodePanel(
-    source: CodePanelSource,
+    fileCode: ChangedFileCodeSlot,
     worktrees: List<CodeWorktree>,
     checked: Boolean,
     worktreeRoot: String?,
@@ -58,7 +58,7 @@ internal fun CodePanel(
                 color = MoruTheme.colors.textSecondary,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
             )
-            ChangedFilesBrowser(source, worktreeRoot, loaded, Modifier.weight(1f))
+            ChangedFilesBrowser(worktreeRoot, loaded, fileCode, Modifier.weight(1f))
         } else {
             val message = when {
                 checked && worktrees.isEmpty() -> strings.notRepository

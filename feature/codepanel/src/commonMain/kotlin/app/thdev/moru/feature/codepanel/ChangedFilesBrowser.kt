@@ -16,9 +16,13 @@ import androidx.compose.ui.Modifier
 import app.thdev.moru.core.designsystem.component.ckSurface
 import app.thdev.moru.core.designsystem.theme.MoruSurfaceRole
 import app.thdev.moru.core.model.git.diff.CommitDiffResult
+import app.thdev.moru.core.model.git.diff.DiffFile
 import app.thdev.moru.core.ui.diff.DiffFileRow
 
 private const val FileListShare = 0.35f
+
+/** Shows one changed file's code; the caller decides where its content comes from. */
+internal typealias ChangedFileCodeSlot = @Composable (worktreeRoot: String, file: DiffFile, modifier: Modifier) -> Unit
 
 /**
  * The changed files above and the chosen one's code below. The list takes what its files need up to [FileListShare] of
@@ -26,9 +30,9 @@ private const val FileListShare = 0.35f
  */
 @Composable
 internal fun ChangedFilesBrowser(
-    source: CodePanelSource,
     worktreeRoot: String,
     changes: CommitDiffResult.Loaded,
+    fileCode: ChangedFileCodeSlot,
     modifier: Modifier = Modifier,
 ) {
     var selectedPath by remember(worktreeRoot) { mutableStateOf<String?>(null) }
@@ -41,12 +45,7 @@ internal fun ChangedFilesBrowser(
                     DiffFileRow(file = file, selected = file == selected, onClick = { selectedPath = file.displayPath })
                 }
             }
-            ChangedFileCode(
-                source = source,
-                worktreeRoot = worktreeRoot,
-                file = selected,
-                modifier = Modifier.weight(1f).fillMaxWidth().ckSurface(MoruSurfaceRole.Page),
-            )
+            fileCode(worktreeRoot, selected, Modifier.weight(1f).fillMaxWidth().ckSurface(MoruSurfaceRole.Page))
         }
     }
 }

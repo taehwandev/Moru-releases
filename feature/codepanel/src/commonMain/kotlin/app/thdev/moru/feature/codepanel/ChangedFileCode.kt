@@ -45,6 +45,21 @@ internal fun ChangedFileCode(
     file: DiffFile,
     modifier: Modifier = Modifier,
 ) {
+    // The only side effect: the file is read off the UI thread, then the stateless content renders it.
+    val deleted = file.status == DiffFileStatus.Deleted || file.newPath == null
+    val preview by produceState<WorkbenchFilePreview?>(null, worktreeRoot, file) {
+        value = if (deleted) null else withContext(Dispatchers.IO) { source.readFile(worktreeRoot, file.displayPath) }
+    }
+    ChangedFileCodeContent(file, preview, modifier)
+}
+
+/** Renders [file] with its [preview] (null while it is read). Holds only the code or diff switch. */
+@Composable
+internal fun ChangedFileCodeContent(
+    file: DiffFile,
+    preview: WorkbenchFilePreview?,
+    modifier: Modifier = Modifier,
+) {
     val strings = codePanelStrings()
     val deleted = file.status == DiffFileStatus.Deleted || file.newPath == null
     var showDiff by remember(file.displayPath) { mutableStateOf(false) }
@@ -69,9 +84,6 @@ internal fun ChangedFileCode(
         if (deleted || showDiff) {
             DiffFileView(file, Modifier.weight(1f))
         } else {
-            val preview by produceState<WorkbenchFilePreview?>(null, worktreeRoot, file) {
-                value = withContext(Dispatchers.IO) { source.readFile(worktreeRoot, file.displayPath) }
-            }
             val content = preview?.content
             if (content == null) {
                 Box(Modifier.weight(1f).fillMaxWidth().padding(16.dp)) {
